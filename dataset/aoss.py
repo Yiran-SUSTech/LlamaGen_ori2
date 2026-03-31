@@ -8,6 +8,9 @@ from botocore.config import Config
 import io
 import sys
 import os
+import json
+import glob
+from datetime import datetime
 
 
 class AOSSImageNetDataset(Dataset):
@@ -29,6 +32,7 @@ class AOSSImageNetDataset(Dataset):
         with open(filelist_path) as f:
             self.filelist = f.read().splitlines()
 
+        self.filelist_path = filelist_path
         self.transform = transform
         self.bucket = bucket
 
@@ -73,35 +77,72 @@ class AOSSImageNetDataset(Dataset):
                 img_bytes = response['Body'].read()
                 img_buffer = io.BytesIO(img_bytes)
                 img = Image.open(img_buffer).convert('RGB')
-                return img
+                return img, None
             except botocore.exceptions.ReadTimeoutError as e:
                 if attempt < max_retries - 1:
                     print(f"⚠️ 读取超时，重试 {attempt + 1}/{max_retries}: {object_key}")
                     continue
                 print(f"❌ 读取超时 ({object_key}): {e}")
-                return None
+                return None, {
+                    'object_key': object_key,
+                    'reason': 'ReadTimeoutError',
+                    'error': str(e)
+                }
             except botocore.exceptions.ClientError as e:
-                if e.response['Error']['Code'] == 'NoSuchKey':
+                error_code = e.response['Error']['Code']
+                if error_code == 'NoSuchKey':
                     print(f"⚠️ 文件不存在: {object_key}")
                 else:
                     print(f"❌ 客户端错误 ({object_key}): {e}")
-                return None
+                return None, {
+                    'object_key': object_key,
+                    'reason': error_code,
+                    'error': str(e)
+                }
             except Exception as e:
                 print(f"❌ 加载图像出错 ({object_key}): {e}")
-                return None
+                return None, {
+                    'object_key': object_key,
+                    'reason': type(e).__name__,
+                    'error': str(e)
+                }
 
-        return None
+        return None, {
+            'object_key': object_key,
+            'reason': 'UnknownError',
+            'error': 'Failed after retries'
+        }
+
+    def _get_failure_log_path(self):
+        failure_log_path = os.environ.get('AOSS_FAILURE_LOG_PATH')
+        if not failure_log_path:
+            return None
+        return f"{failure_log_path}.{os.getpid()}"
+
+    def _append_failure_record(self, failure_record):
+        failure_log_path = self._get_failure_log_path()
+        if not failure_log_path:
+            return
+        with open(failure_log_path, 'a', encoding='utf-8') as f:
+            f.write(json.dumps(failure_record, ensure_ascii=False) + '\n')
 
     def __len__(self):
         return len(self.filelist)
 
     def __getitem__(self, index: int):
         img_path = self.filelist[index]
-        img = self.load_image_from_aoss(img_path)
+        img, failure_info = self.load_image_from_aoss(img_path)
 
         if img is None:
-            # 如果加载失败，返回黑色图像（或者可以跳过）
             print(f"⚠️ 使用占位图像替代: {img_path}")
+            failure_record = {
+                'index': index,
+                'object_key': img_path,
+                'used_placeholder': True,
+            }
+            if failure_info is not None:
+                failure_record.update(failure_info)
+            self._append_failure_record(failure_record)
             img = Image.new('RGB', (256, 256), (0, 0, 0))
 
         if self.transform:
@@ -109,6 +150,31 @@ class AOSSImageNetDataset(Dataset):
 
         # 返回图像和dummy label（VQ训练不需要label）
         return img, 0
+
+
+    def write_failure_summary(self, output_path):
+        failed_samples = []
+        failure_log_path = os.environ.get('AOSS_FAILURE_LOG_PATH')
+        if failure_log_path:
+            for log_path in glob.glob(f"{failure_log_path}.*"):
+                with open(log_path, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        line = line.strip()
+                        if line:
+                            failed_samples.append(json.loads(line))
+
+        summary = {
+            'bucket': self.bucket,
+            'filelist_path': os.path.abspath(self.filelist_path),
+            'total_samples': len(self.filelist),
+            'placeholder_count': len(failed_samples),
+            'has_placeholder': len(failed_samples) > 0,
+            'message': '没有黑图，占位图像未被使用' if len(failed_samples) == 0 else '存在黑图，占位图像已用于部分样本',
+            'failed_samples': failed_samples,
+            'generated_at': datetime.now().isoformat()
+        }
+        with open(output_path, 'w', encoding='utf-8') as f:
+            json.dump(summary, f, ensure_ascii=False, indent=2)
 
 
 def build_aoss_imagenet(args, transform):

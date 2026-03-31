@@ -47,10 +47,17 @@ def main(args):
         rank = 0
     
     # Setup a feature folder:
+    failure_log_path = os.path.join(args.code_path, f'{args.dataset}{args.image_size}_placeholder_failures.jsonl')
+    failure_summary_path = os.path.join(args.code_path, f'{args.dataset}{args.image_size}_placeholder_summary.json')
+    if args.dataset == 'aoss':
+        os.environ['AOSS_FAILURE_LOG_PATH'] = failure_log_path
     if args.debug or rank == 0:
         os.makedirs(args.code_path, exist_ok=True)
         os.makedirs(os.path.join(args.code_path, f'{args.dataset}{args.image_size}_codes'), exist_ok=True)
         os.makedirs(os.path.join(args.code_path, f'{args.dataset}{args.image_size}_labels'), exist_ok=True)
+        if args.dataset == 'aoss':
+            for stale_log_path in [path for path in os.listdir(args.code_path) if path.startswith(f'{args.dataset}{args.image_size}_placeholder_failures.jsonl.')]:
+                os.remove(os.path.join(args.code_path, stale_log_path))
 
     # create and load model
     vq_model = VQ_models[args.vq_model](
@@ -126,7 +133,19 @@ def main(args):
             total += 1
         print(total)
 
-    dist.destroy_process_group()
+    if args.dataset == 'aoss':
+        if args.debug:
+            dataset.write_failure_summary(failure_summary_path)
+            print(f"Placeholder summary saved to {failure_summary_path}")
+        else:
+            dist.barrier()
+            if rank == 0:
+                dataset.write_failure_summary(failure_summary_path)
+                print(f"Placeholder summary saved to {failure_summary_path}")
+            dist.barrier()
+            dist.destroy_process_group()
+    elif not args.debug:
+        dist.destroy_process_group()
 
 
 if __name__ == "__main__":
