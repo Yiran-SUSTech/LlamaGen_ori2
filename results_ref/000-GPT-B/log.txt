@@ -1,0 +1,252 @@
+[[34m2026-01-25 23:08:55[0m] Experiment directory created at results_ref/000-GPT-B
+[[34m2026-01-25 23:08:55[0m] Namespace(code_path='/mnt/afs/zhengmingkai/zyr/ExtractedCode/imagenet_code_256_c2i_flip_ten_crop', cloud_save_path='/mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/cloud_save', no_local_save=False, gpt_model='GPT-B', gpt_ckpt=None, gpt_type='c2i', vocab_size=16384, ema=False, cls_token_num=1, dropout_p=0.1, token_dropout_p=0.1, drop_path_rate=0.0, no_compile=True, results_dir='results_ref', dataset='imagenet_code', image_size=256, downsample_size=16, num_classes=1000, epochs=400, lr=0.0004, weight_decay=0.05, beta1=0.9, beta2=0.95, max_grad_norm=1.0, global_batch_size=2048, global_seed=0, num_workers=24, log_every=100, ckpt_every=100000, gradient_accumulation_steps=1, mixed_precision='bf16', prefetch_factor=4, warmup_percent=0.25, const_percent=0.0, cosine_percent=0.75, max_lr=0.0004, min_lr=1e-05, is_lr_scheduler=True, rank=0, world_size=8, gpu=0, dist_url='env://', distributed=True, dist_backend='nccl')
+[[34m2026-01-25 23:08:55[0m] Starting rank=0, seed=0, world_size=8.
+[[34m2026-01-25 23:08:56[0m] GPT Parameters: 110,888,448
+[[34m2026-01-25 23:08:56[0m] num decayed parameter tensors: 63, with 110,869,248 parameters
+[[34m2026-01-25 23:08:56[0m] num non-decayed parameter tensors: 25, with 19,200 parameters
+[[34m2026-01-25 23:08:56[0m] using fused AdamW: True
+[[34m2026-01-25 23:08:56[0m] Dataset contains 1,281,167 images (/mnt/afs/zhengmingkai/zyr/ExtractedCode/imagenet_code_256_c2i_flip_ten_crop) with flip augmentation and 10 crop augmentation
+[[34m2026-01-25 23:08:56[0m] Learning rate schedule: max_lr=0.0004, min_lr=1e-05
+[[34m2026-01-25 23:08:56[0m] warmup steps: 62500 (25.0%), constant steps: 0 (0.0%), cosine steps: 187500 (75.0%), total training steps: 250000
+[[34m2026-01-25 23:08:56[0m] ============================================================
+[[34m2026-01-25 23:08:56[0m] Model Parameter Summary:
+[[34m2026-01-25 23:08:56[0m] Layer Name                                         Params (M)  Trainable
+[[34m2026-01-25 23:08:56[0m] ------------------------------------------------------------
+[[34m2026-01-25 23:08:56[0m] cls_embedding.embedding_table.weight                     0.77        Yes
+[[34m2026-01-25 23:08:56[0m] tok_embeddings.weight                                   12.58        Yes
+[[34m2026-01-25 23:08:56[0m] layers.0.attention.wqkv.weight                           1.77        Yes
+[[34m2026-01-25 23:08:56[0m] layers.0.attention.wo.weight                             0.59        Yes
+[[34m2026-01-25 23:08:56[0m] layers.0.feed_forward.w1.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.0.feed_forward.w3.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.0.feed_forward.w2.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.0.attention_norm.weight                           0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.0.ffn_norm.weight                                 0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.1.attention.wqkv.weight                           1.77        Yes
+[[34m2026-01-25 23:08:56[0m] layers.1.attention.wo.weight                             0.59        Yes
+[[34m2026-01-25 23:08:56[0m] layers.1.feed_forward.w1.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.1.feed_forward.w3.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.1.feed_forward.w2.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.1.attention_norm.weight                           0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.1.ffn_norm.weight                                 0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.2.attention.wqkv.weight                           1.77        Yes
+[[34m2026-01-25 23:08:56[0m] layers.2.attention.wo.weight                             0.59        Yes
+[[34m2026-01-25 23:08:56[0m] layers.2.feed_forward.w1.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.2.feed_forward.w3.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.2.feed_forward.w2.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.2.attention_norm.weight                           0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.2.ffn_norm.weight                                 0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.3.attention.wqkv.weight                           1.77        Yes
+[[34m2026-01-25 23:08:56[0m] layers.3.attention.wo.weight                             0.59        Yes
+[[34m2026-01-25 23:08:56[0m] layers.3.feed_forward.w1.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.3.feed_forward.w3.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.3.feed_forward.w2.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.3.attention_norm.weight                           0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.3.ffn_norm.weight                                 0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.4.attention.wqkv.weight                           1.77        Yes
+[[34m2026-01-25 23:08:56[0m] layers.4.attention.wo.weight                             0.59        Yes
+[[34m2026-01-25 23:08:56[0m] layers.4.feed_forward.w1.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.4.feed_forward.w3.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.4.feed_forward.w2.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.4.attention_norm.weight                           0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.4.ffn_norm.weight                                 0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.5.attention.wqkv.weight                           1.77        Yes
+[[34m2026-01-25 23:08:56[0m] layers.5.attention.wo.weight                             0.59        Yes
+[[34m2026-01-25 23:08:56[0m] layers.5.feed_forward.w1.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.5.feed_forward.w3.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.5.feed_forward.w2.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.5.attention_norm.weight                           0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.5.ffn_norm.weight                                 0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.6.attention.wqkv.weight                           1.77        Yes
+[[34m2026-01-25 23:08:56[0m] layers.6.attention.wo.weight                             0.59        Yes
+[[34m2026-01-25 23:08:56[0m] layers.6.feed_forward.w1.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.6.feed_forward.w3.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.6.feed_forward.w2.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.6.attention_norm.weight                           0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.6.ffn_norm.weight                                 0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.7.attention.wqkv.weight                           1.77        Yes
+[[34m2026-01-25 23:08:56[0m] layers.7.attention.wo.weight                             0.59        Yes
+[[34m2026-01-25 23:08:56[0m] layers.7.feed_forward.w1.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.7.feed_forward.w3.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.7.feed_forward.w2.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.7.attention_norm.weight                           0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.7.ffn_norm.weight                                 0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.8.attention.wqkv.weight                           1.77        Yes
+[[34m2026-01-25 23:08:56[0m] layers.8.attention.wo.weight                             0.59        Yes
+[[34m2026-01-25 23:08:56[0m] layers.8.feed_forward.w1.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.8.feed_forward.w3.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.8.feed_forward.w2.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.8.attention_norm.weight                           0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.8.ffn_norm.weight                                 0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.9.attention.wqkv.weight                           1.77        Yes
+[[34m2026-01-25 23:08:56[0m] layers.9.attention.wo.weight                             0.59        Yes
+[[34m2026-01-25 23:08:56[0m] layers.9.feed_forward.w1.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.9.feed_forward.w3.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.9.feed_forward.w2.weight                          1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.9.attention_norm.weight                           0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.9.ffn_norm.weight                                 0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.10.attention.wqkv.weight                          1.77        Yes
+[[34m2026-01-25 23:08:56[0m] layers.10.attention.wo.weight                            0.59        Yes
+[[34m2026-01-25 23:08:56[0m] layers.10.feed_forward.w1.weight                         1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.10.feed_forward.w3.weight                         1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.10.feed_forward.w2.weight                         1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.10.attention_norm.weight                          0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.10.ffn_norm.weight                                0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.11.attention.wqkv.weight                          1.77        Yes
+[[34m2026-01-25 23:08:56[0m] layers.11.attention.wo.weight                            0.59        Yes
+[[34m2026-01-25 23:08:56[0m] layers.11.feed_forward.w1.weight                         1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.11.feed_forward.w3.weight                         1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.11.feed_forward.w2.weight                         1.57        Yes
+[[34m2026-01-25 23:08:56[0m] layers.11.attention_norm.weight                          0.00        Yes
+[[34m2026-01-25 23:08:56[0m] layers.11.ffn_norm.weight                                0.00        Yes
+[[34m2026-01-25 23:08:56[0m] norm.weight                                              0.00        Yes
+[[34m2026-01-25 23:08:56[0m] output.weight                                           12.58        Yes
+[[34m2026-01-25 23:08:56[0m] ------------------------------------------------------------
+[[34m2026-01-25 23:08:56[0m] Total Model Parameters: 110.89 M
+[[34m2026-01-25 23:08:56[0m] Total Trainable Parameters: 110.89 M
+[[34m2026-01-25 23:08:56[0m] ============================================================
+[[34m2026-01-25 23:08:56[0m] Training for 400 epochs...
+[[34m2026-01-25 23:08:56[0m] Beginning epoch 0...
+[[34m2026-01-25 23:09:30[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:30[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:32[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:32[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:33[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:33[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:33[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:33[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:34[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:34[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:35[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:35[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:35[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:35[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:36[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:36[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:37[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:37[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:37[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:37[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:38[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:38[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:38[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:38[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:39[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:39[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:40[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:40[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:40[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:40[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:41[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:41[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:42[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:42[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:42[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:42[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:43[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:43[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:43[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:43[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:44[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:44[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:45[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:45[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:45[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:45[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:09:46[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:09:46[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:09[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:09[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:11[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:11[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:12[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:12[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:12[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:12[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:13[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:13[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:14[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:14[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:14[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:14[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:15[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:15[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:16[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:16[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:16[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:16[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:17[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:17[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:17[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:17[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:18[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:18[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:19[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:19[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:19[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:19[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:20[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:20[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:21[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:21[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:21[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:21[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:22[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:22[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:22[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:22[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:23[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:23[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:24[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:24[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:24[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:24[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:25[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:25[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:47[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:47[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:49[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:49[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:49[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:49[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:50[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:50[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:50[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:50[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:51[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:51[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:52[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:52[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:52[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:52[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:53[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:53[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:54[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:54[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:54[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:54[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:55[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:55[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:55[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:55[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:56[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:56[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:57[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:57[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:57[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:57[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:58[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:58[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:59[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:59[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:10:59[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:10:59[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:11:00[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:11:00[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:11:00[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:11:00[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:11:01[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:11:01[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:11:02[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:11:02[0m] c_indices.shape: torch.Size([256])
+[[34m2026-01-25 23:11:02[0m] z_indices.shape: torch.Size([256, 256])
+[[34m2026-01-25 23:11:02[0m] c_indices.shape: torch.Size([256])
