@@ -109,3 +109,16 @@ bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/scripts/autoregressive/sample_c2i.s
 python3 evaluations/c2i/evaluator.py \
     /mnt/afs/zhengmingkai/zyr/LlamaGenOri/evaluations/VIRTUAL_imagenet256_labeled.npz \
     /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/samples/GPT-B-400e_LlamaGen_RARlr-size-256-size-256-VQ-16-topk-0-topp-1.0-temperature-1.0-cfg-2.0-seed-0.npz
+
+
+# placeholder
+bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/train_occupy.sh \
+    --cloud-save-path /mnt/datasets/LlamaGen_ori2/cloud_save \
+    --code-path /mnt/afs/zhengmingkai/zyr/ExtractedCode/imagenet_code_384_c2i_flip_ten_crop \
+    --vq-ckpt /mnt/afs/zhengmingkai/zyr/pretrained_models/vq_ds16_c2i.pt \
+    --gpt-model GPT-L \
+    --gpt-ckpt /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/results/071-GPT-L/checkpoints/0300240.pt \
+    --image-size 384 --adam-block-size 8 --pre_token_choose close_min --freqs_cis_reorder_shceme None \
+    --global-batch-size 256 --lr 0.00001 --epochs 300 --is-lr-scheduler \
+    --ckpt-every 50 --log-every 300 \
+    --no-compile --is-wandb-log --wandb_offline
