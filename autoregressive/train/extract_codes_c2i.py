@@ -49,13 +49,22 @@ def main(args):
     # Setup a feature folder:
     failure_log_path = os.path.join(args.code_path, f'{args.dataset}{args.image_size}_placeholder_failures.jsonl')
     failure_summary_path = os.path.join(args.code_path, f'{args.dataset}{args.image_size}_placeholder_summary.json')
+    dump_dir = os.path.join(args.code_path, f'{args.dataset}{args.image_size}_dumped_images')
     if args.dataset == 'aoss':
         os.environ['AOSS_FAILURE_LOG_PATH'] = failure_log_path
+        os.environ['AOSS_DUMP_COUNT'] = str(args.dump_aoss_count)
+        os.environ['AOSS_DUMP_DIR'] = dump_dir
     if args.debug or rank == 0:
         os.makedirs(args.code_path, exist_ok=True)
         os.makedirs(os.path.join(args.code_path, f'{args.dataset}{args.image_size}_codes'), exist_ok=True)
         os.makedirs(os.path.join(args.code_path, f'{args.dataset}{args.image_size}_labels'), exist_ok=True)
         if args.dataset == 'aoss':
+            if args.dump_aoss_count > 0:
+                os.makedirs(dump_dir, exist_ok=True)
+                for dumped_name in os.listdir(dump_dir):
+                    dumped_path = os.path.join(dump_dir, dumped_name)
+                    if os.path.isfile(dumped_path):
+                        os.remove(dumped_path)
             for stale_log_path in [path for path in os.listdir(args.code_path) if path.startswith(f'{args.dataset}{args.image_size}_placeholder_failures.jsonl.')]:
                 os.remove(os.path.join(args.code_path, stale_log_path))
 
@@ -164,5 +173,6 @@ if __name__ == "__main__":
     parser.add_argument("--num-workers", type=int, default=24)
     parser.add_argument("--debug", action='store_true')
     parser.add_argument("--aoss_bucket", type=str, default='imagenet')
+    parser.add_argument("--dump-aoss-count", type=int, default=0, help="save first n successfully downloaded AOSS images to disk for inspection")
     args = parser.parse_args()
     main(args)

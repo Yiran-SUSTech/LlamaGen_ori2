@@ -10,6 +10,7 @@ import sys
 import os
 import json
 import glob
+from pathlib import Path
 from datetime import datetime
 
 
@@ -50,6 +51,8 @@ class AOSSImageNetDataset(Dataset):
             read_timeout=300,
             retries={'max_attempts': 20, 'mode': 'adaptive'}
         )
+        self.dump_count = int(os.environ.get('AOSS_DUMP_COUNT', '0'))
+        self.dump_dir = os.environ.get('AOSS_DUMP_DIR', '')
 
     def _ensure_s3_client(self):
         """延迟初始化S3客户端"""
@@ -119,12 +122,37 @@ class AOSSImageNetDataset(Dataset):
             return None
         return f"{failure_log_path}.{os.getpid()}"
 
+    def _get_dump_index_path(self):
+        if not self.dump_dir:
+            return None
+        return os.path.join(self.dump_dir, 'dumped_samples_index.jsonl')
+
     def _append_failure_record(self, failure_record):
         failure_log_path = self._get_failure_log_path()
         if not failure_log_path:
             return
         with open(failure_log_path, 'a', encoding='utf-8') as f:
             f.write(json.dumps(failure_record, ensure_ascii=False) + '\n')
+
+    def _should_dump_sample(self, index):
+        return self.dump_count > 0 and index < self.dump_count and bool(self.dump_dir)
+
+    def _dump_sample_image(self, img, index, object_key):
+        if not self._should_dump_sample(index):
+            return
+        Path(self.dump_dir).mkdir(parents=True, exist_ok=True)
+        suffix = Path(object_key).suffix or '.png'
+        output_name = f'{index:06d}{suffix}'
+        output_path = os.path.join(self.dump_dir, output_name)
+        img.save(output_path)
+        dump_index_path = self._get_dump_index_path()
+        if dump_index_path:
+            with open(dump_index_path, 'a', encoding='utf-8') as f:
+                f.write(json.dumps({
+                    'index': index,
+                    'object_key': object_key,
+                    'saved_path': os.path.abspath(output_path)
+                }, ensure_ascii=False) + '\n')
 
     def __len__(self):
         return len(self.filelist)
@@ -144,6 +172,8 @@ class AOSSImageNetDataset(Dataset):
                 failure_record.update(failure_info)
             self._append_failure_record(failure_record)
             img = Image.new('RGB', (256, 256), (0, 0, 0))
+        else:
+            self._dump_sample_image(img, index, img_path)
 
         if self.transform:
             img = self.transform(img)
@@ -163,12 +193,24 @@ class AOSSImageNetDataset(Dataset):
                         if line:
                             failed_samples.append(json.loads(line))
 
+        dumped_samples = []
+        dump_index_path = self._get_dump_index_path()
+        if dump_index_path and os.path.exists(dump_index_path):
+            with open(dump_index_path, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        dumped_samples.append(json.loads(line))
+
         summary = {
             'bucket': self.bucket,
             'filelist_path': os.path.abspath(self.filelist_path),
             'total_samples': len(self.filelist),
             'placeholder_count': len(failed_samples),
             'has_placeholder': len(failed_samples) > 0,
+            'dump_count': self.dump_count,
+            'dump_dir': os.path.abspath(self.dump_dir) if self.dump_dir else '',
+            'dumped_samples': dumped_samples,
             'message': '没有黑图，占位图像未被使用' if len(failed_samples) == 0 else '存在黑图，占位图像已用于部分样本',
             'failed_samples': failed_samples,
             'generated_at': datetime.now().isoformat()
