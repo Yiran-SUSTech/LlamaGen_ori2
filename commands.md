@@ -29,6 +29,21 @@ bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/scripts/autoregressive/extract_code
     --code-path /mnt/afs/zhengmingkai/zyr/ExtractedCode2/imagenet_code_256_c2i_flip_ten_crop \
     --ten-crop --crop-range 1.1 --image-size 256
 
+bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/scripts/autoregressive/extract_codes_c2i.sh \
+    --vq-ckpt /mnt/afs/zhengmingkai/zyr/pretrained_models/vq_ds16_c2i.pt \
+    --dataset aoss \
+    --data-path /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/dataset/imagenet_train_filelist.txt \
+    --code-path /mnt/afs/zhengmingkai/zyr/ExtractedCode2/imagenet_code_256_c2i_flip_ten_crop_105 \
+    --ten-crop --crop-range 1.05 --image-size 256
+
+bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/scripts/autoregressive/extract_codes_c2i.sh \
+    --vq-ckpt /mnt/afs/zhengmingkai/zyr/pretrained_models/vq_ds16_c2i.pt \
+    --dataset aoss \
+    --data-path /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/dataset/imagenet_train_filelist.txt \
+    --code-path /mnt/afs/zhengmingkai/zyr/ExtractedCode2/imagenet_code_384_c2i_flip_ten_crop \
+    --ten-crop --crop-range 1.1 --image-size 384
+
+
 # training
 torchrun \
     --nnodes=1 --nproc_per_node=8 --node_rank=0 \
