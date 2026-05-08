@@ -320,6 +320,13 @@ def main(args):
             samples = F.interpolate(samples, size=(args.image_size_eval, args.image_size_eval), mode='bicubic')
         samples = torch.clamp(127.5 * samples + 128.0, 0, 255).permute(0, 2, 3, 1).to("cpu", dtype=torch.uint8).numpy()
         
+        # Save class ids to file
+        c_indices_cpu = c_indices.cpu().numpy()
+        with open(f"{sample_folder_dir}/class_ids.txt", "a") as f:
+            for i in range(len(c_indices_cpu)):
+                index = i * dist.get_world_size() + rank + total
+                f.write(f"{index:06d} {c_indices_cpu[i]}\n")
+        
         # Save samples to disk as individual .png files
         for i, sample in enumerate(samples):
             index = i * dist.get_world_size() + rank + total

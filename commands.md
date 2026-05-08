@@ -123,7 +123,7 @@ bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/scripts/autoregressive/sample_c2i.s
 # Evaluation
 python3 evaluations/c2i/evaluator.py \
     /mnt/afs/zhengmingkai/zyr/LlamaGenOri/evaluations/VIRTUAL_imagenet256_labeled.npz \
-    /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/samples/GPT-B-400e_LlamaGen_RARlr-size-256-size-256-VQ-16-topk-0-topp-1.0-temperature-1.0-cfg-2.0-seed-0.npz
+    /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/samples/GPT-B-c2i_B_256-size-256-size-256-VQ-16-topk-0-topp-1.0-temperature-1.0-cfg-2.0-seed-0.npz
 
 
 # placeholder
