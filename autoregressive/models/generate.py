@@ -61,10 +61,21 @@ def top_k_top_p_filtering(
     return logits
 
 
-def sample(logits, temperature: float=1.0, top_k: int=0, top_p: float=1.0, sample_logits=True):        
-    logits = logits[:, -1, :] / max(temperature, 1e-5)
-    if top_k > 0 or top_p < 1.0:
-        logits = top_k_top_p_filtering(logits, top_k=top_k, top_p=top_p)
+def sample(logits, temperature: float=1.0, top_k: int=0, top_p: float=1.0, sample_logits=True, noise_scale: float=0.0, noise_steps: int=0, current_step: int=0, noise_temperature: float=None, noise_top_k: int=None, noise_top_p: float=None):        
+    if noise_steps > 0 and current_step < noise_steps:
+        eff_temperature = noise_temperature if noise_temperature is not None else temperature
+        eff_top_k = noise_top_k if noise_top_k is not None else top_k
+        eff_top_p = noise_top_p if noise_top_p is not None else top_p
+    else:
+        eff_temperature = temperature
+        eff_top_k = top_k
+        eff_top_p = top_p
+    logits = logits[:, -1, :] / max(eff_temperature, 1e-5)
+    if noise_scale > 0.0 and (noise_steps == 0 or current_step < noise_steps):
+        noise = torch.randn_like(logits) * noise_scale
+        logits = logits + noise
+    if eff_top_k > 0 or eff_top_p < 1.0:
+        logits = top_k_top_p_filtering(logits, top_k=eff_top_k, top_p=eff_top_p)
     probs = F.softmax(logits, dim=-1)
     if sample_logits:
         idx = torch.multinomial(probs, num_samples=1)
@@ -93,7 +104,7 @@ def prefill(model, cond_idx: torch.Tensor, input_pos: torch.Tensor, cfg_scale: f
     return sample(logits, **sampling_kwargs)[0]
 
 
-def decode_one_token(model, x: torch.Tensor, input_pos: torch.Tensor, cfg_scale: float, cfg_flag: bool, **sampling_kwargs):
+def decode_one_token(model, x: torch.Tensor, input_pos: torch.Tensor, cfg_scale: float, cfg_flag: bool, current_step: int = 0, **sampling_kwargs):
     assert input_pos.shape[-1] == 1
     if cfg_scale > 1.0:
         x_combined = torch.cat([x, x])
@@ -106,7 +117,7 @@ def decode_one_token(model, x: torch.Tensor, input_pos: torch.Tensor, cfg_scale:
             logits = cond_logits
     else:
         logits, _ = model(x, cond_idx=None, input_pos=input_pos)
-    return sample(logits, **sampling_kwargs)
+    return sample(logits, current_step=current_step, **sampling_kwargs)
 
 
 def decode_n_tokens(
@@ -122,7 +133,7 @@ def decode_n_tokens(
                 if cfg_interval > -1 and i > cfg_interval:
                     cfg_flag = False
                 next_token, next_prob = decode_one_token(
-                    model, cur_token, input_pos, cfg_scale, cfg_flag, **sampling_kwargs
+                    model, cur_token, input_pos, cfg_scale, cfg_flag, current_step=i, **sampling_kwargs
                 )
                 input_pos += 1
                 new_tokens.append(next_token.clone())
@@ -133,7 +144,7 @@ def decode_n_tokens(
                 if cfg_interval > -1 and i > cfg_interval:
                     cfg_flag = False
                 next_token, next_prob = decode_one_token(
-                    model, cur_token, input_pos, cfg_scale, cfg_flag, **sampling_kwargs
+                    model, cur_token, input_pos, cfg_scale, cfg_flag, current_step=i, **sampling_kwargs
                 )
                 input_pos += 1
                 new_tokens.append(next_token.clone())

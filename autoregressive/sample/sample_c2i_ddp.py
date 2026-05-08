@@ -310,7 +310,10 @@ def main(args):
             gpt_model, c_indices, latent_size ** 2,
             cfg_scale=args.cfg_scale, cfg_interval=args.cfg_interval,
             temperature=args.temperature, top_k=args.top_k,
-            top_p=args.top_p, sample_logits=True, 
+            top_p=args.top_p, sample_logits=True,
+            noise_scale=args.noise_scale, noise_steps=args.noise_steps,
+            noise_temperature=args.noise_temperature, noise_top_k=args.noise_top_k,
+            noise_top_p=args.noise_top_p,
             )
         e_ARtime = time.time() ################################
         ARtime += (e_ARtime - s_ARtime) ################################
@@ -373,5 +376,7 @@ if __name__ == "__main__":
     parser.add_argument("--top-k", type=int, default=0,help="top-k value to sample with")
     parser.add_argument("--temperature", type=float, default=1.0, help="temperature value to sample with")
     parser.add_argument("--top-p", type=float, default=1.0, help="top-p value to sample with")
+    parser.add_argument("--noise-scale", type=float, default=0.0, help="noise scale added to logits for sampling")
+    parser.add_argument("--noise-steps", type=int, default=0, help="number of initial steps to apply noise (0 means all steps)")
     args = parser.parse_args()
     main(args)
