@@ -71,6 +71,14 @@ def main(args):
     folder_name = f"{model_string_name}-{ckpt_string_name}-size-{args.image_size}-size-{args.image_size_eval}-{args.vq_model}-" \
                   f"topk-{args.top_k}-topp-{args.top_p}-temperature-{args.temperature}-" \
                   f"cfg-{args.cfg_scale}-seed-{args.global_seed}"
+    if args.noise_scale > 0.0:
+        folder_name += f"-noise-steps-{args.noise_steps}-noise-scale-{args.noise_scale}"
+        if args.noise_temperature is not None:
+            folder_name += f"-noise-temp-{args.noise_temperature}"
+        if args.noise_top_k is not None:
+            folder_name += f"-noise-topk-{args.noise_top_k}"
+        if args.noise_top_p is not None:
+            folder_name += f"-noise-topp-{args.noise_top_p}"
     sample_folder_dir = f"{args.sample_dir}/{folder_name}"
     if rank == 0:
         os.makedirs(sample_folder_dir, exist_ok=True)
