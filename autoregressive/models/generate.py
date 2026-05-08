@@ -6,7 +6,12 @@ import torch.nn as nn
 from torch.nn import functional as F
 import torch._dynamo.config
 import torch._inductor.config
-from torch.nn.attention import sdpa_kernel, SDPBackend
+try:
+    from torch.nn.attention import sdpa_kernel, SDPBackend
+    HAS_NEW_SDP = True
+except ImportError:
+    HAS_NEW_SDP = False
+    import torch.backends.cuda
 
 import copy
 # torch._inductor.config.coordinate_descent_tuning = True
@@ -112,16 +117,28 @@ def decode_n_tokens(
     cfg_flag = True
     for i in range(num_new_tokens):
         # with torch.backends.cuda.sdp_kernel(enable_flash=False, enable_mem_efficient=False, enable_math=True): # Actually better for Inductor to codegen attention here
-        with sdpa_kernel(SDPBackend.MATH):
-            if cfg_interval > -1 and i > cfg_interval:
-                cfg_flag = False
-            next_token, next_prob = decode_one_token(
-                model, cur_token, input_pos, cfg_scale, cfg_flag, **sampling_kwargs
-            )
-            input_pos += 1
-            new_tokens.append(next_token.clone())
-            new_probs.append(next_prob.clone())
-            cur_token = next_token.view(-1, 1)
+        if HAS_NEW_SDP:
+            with sdpa_kernel(SDPBackend.MATH):
+                if cfg_interval > -1 and i > cfg_interval:
+                    cfg_flag = False
+                next_token, next_prob = decode_one_token(
+                    model, cur_token, input_pos, cfg_scale, cfg_flag, **sampling_kwargs
+                )
+                input_pos += 1
+                new_tokens.append(next_token.clone())
+                new_probs.append(next_prob.clone())
+                cur_token = next_token.view(-1, 1)
+        else:
+            with torch.backends.cuda.sdp_kernel(enable_flash=False, enable_mem_efficient=False, enable_math=True):
+                if cfg_interval > -1 and i > cfg_interval:
+                    cfg_flag = False
+                next_token, next_prob = decode_one_token(
+                    model, cur_token, input_pos, cfg_scale, cfg_flag, **sampling_kwargs
+                )
+                input_pos += 1
+                new_tokens.append(next_token.clone())
+                new_probs.append(next_prob.clone())
+                cur_token = next_token.view(-1, 1)
     
     return new_tokens, new_probs
 

@@ -27,7 +27,7 @@ bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/scripts/autoregressive/extract_code
     --dataset aoss \
     --data-path /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/dataset/imagenet_train_filelist.txt \
     --code-path /mnt/afs/zhengmingkai/zyr/ExtractedCode2/imagenet_code_256_c2i_flip_ten_crop \
-    --ten-crop --crop-range 1.1 --image-size 256
+    --ten-crop --crop-range 1.1 --image-size 256 --dump-aoss-count 10
 
 # training
 torchrun \
@@ -87,8 +87,8 @@ torchrun \
 # sampling
 bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/scripts/autoregressive/sample_c2i.sh \
     --vq-ckpt /mnt/afs/zhengmingkai/zyr/pretrained_models/vq_ds16_c2i.pt \
-    --gpt-ckpt /mnt/afs/zhengmingkai/zyr/pretrained_models/c2i_XL_384.pt --gpt-model GPT-XL \
-    --image-size 384 --image-size-eval 256 --cfg-scale 2.0 \
+    --gpt-ckpt /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/pretrained_ckpt/c2i_B_256.pt --gpt-model GPT-B \
+    --image-size 256 --image-size-eval 256 --cfg-scale 2.0 \
     --sample-dir samples --num-fid-samples 64 --per-proc-batch-size 8
 
 bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/scripts/autoregressive/sample_c2i.sh \
