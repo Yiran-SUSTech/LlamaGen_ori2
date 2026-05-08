@@ -2,4 +2,4 @@
 set -x
 
 python \
-/mnt/afs/zhengmingkai/zyr/AdamAR-GPU/scripts/train_occupy.py "$@"
+/mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/train_occupy.py "$@"
