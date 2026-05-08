@@ -386,5 +386,8 @@ if __name__ == "__main__":
     parser.add_argument("--top-p", type=float, default=1.0, help="top-p value to sample with")
     parser.add_argument("--noise-scale", type=float, default=0.0, help="noise scale added to logits for sampling")
     parser.add_argument("--noise-steps", type=int, default=0, help="number of initial steps to apply noise (0 means all steps)")
+    parser.add_argument("--noise-temperature", type=float, default=None, help="temperature for noise steps (defaults to --temperature if not set)")
+    parser.add_argument("--noise-top-k", type=int, default=None, help="top-k for noise steps (defaults to --top-k if not set)")
+    parser.add_argument("--noise-top-p", type=float, default=None, help="top-p for noise steps (defaults to --top-p if not set)")
     args = parser.parse_args()
     main(args)
