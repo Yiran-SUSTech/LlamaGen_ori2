@@ -277,12 +277,12 @@ def main(args):
             flops = prof.get_total_flops()
             macs = prof.get_total_macs()
 
-            prof.print_model_profile(
-                profile_step=1, 
-                module_depth=0,      # <--- 关键：设为 0 表示不展开子模块详情
-                top_modules=1,       # <--- 关键：只显示顶层汇总
-                detailed=False       # <--- 关键：关闭算子级别的详细信息
-            )
+            # prof.print_model_profile(
+            #     profile_step=1, 
+            #     module_depth=0,      # <--- 关键：设为 0 表示不展开子模块详情
+            #     top_modules=1,       # <--- 关键：只显示顶层汇总
+            #     detailed=False       # <--- 关键：关闭算子级别的详细信息
+            # )
 
             
             logger.info("-" * 50)
