@@ -101,7 +101,7 @@ def prefill(model, cond_idx: torch.Tensor, input_pos: torch.Tensor, cfg_scale: f
     else:
         logits, _ = model(None, cond_idx, input_pos)
 
-    return sample(logits, **sampling_kwargs)[0]
+    return sample(logits, current_step=0, **sampling_kwargs)[0]
 
 
 def decode_one_token(model, x: torch.Tensor, input_pos: torch.Tensor, cfg_scale: float, cfg_flag: bool, current_step: int = 0, **sampling_kwargs):

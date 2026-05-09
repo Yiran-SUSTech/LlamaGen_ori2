@@ -71,7 +71,7 @@ def main(args):
     folder_name = f"{model_string_name}-{ckpt_string_name}-size-{args.image_size}-size-{args.image_size_eval}-{args.vq_model}-" \
                   f"topk-{args.top_k}-topp-{args.top_p}-temperature-{args.temperature}-" \
                   f"cfg-{args.cfg_scale}-seed-{args.global_seed}"
-    if args.noise_scale > 0.0:
+    if args.noise_steps > 0 or args.noise_scale > 0.0:
         folder_name += f"-noise-steps-{args.noise_steps}-noise-scale-{args.noise_scale}"
         if args.noise_temperature is not None:
             folder_name += f"-noise-temp-{args.noise_temperature}"
