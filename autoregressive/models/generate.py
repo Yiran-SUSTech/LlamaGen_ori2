@@ -61,7 +61,7 @@ def top_k_top_p_filtering(
     return logits
 
 
-def sample(logits, temperature: float=1.0, top_k: int=0, top_p: float=1.0, sample_logits=True, noise_scale: float=0.0, noise_steps: int=0, current_step: int=0, noise_temperature: float=None, noise_top_k: int=None, noise_top_p: float=None):        
+def sample(logits, temperature: float=1.0, top_k: int=0, top_p: float=1.0, sample_logits=True, noise_scale: float=0.0, noise_steps: int=0, current_step: int=0, noise_temperature: float=None, noise_top_k: int=None, noise_top_p: float=None, invert_probs_steps: int=0):        
     if noise_steps > 0 and current_step < noise_steps:
         eff_temperature = noise_temperature if noise_temperature is not None else temperature
         eff_top_k = noise_top_k if noise_top_k is not None else top_k
@@ -77,6 +77,9 @@ def sample(logits, temperature: float=1.0, top_k: int=0, top_p: float=1.0, sampl
     if eff_top_k > 0 or eff_top_p < 1.0:
         logits = top_k_top_p_filtering(logits, top_k=eff_top_k, top_p=eff_top_p)
     probs = F.softmax(logits, dim=-1)
+    if invert_probs_steps > 0 and current_step < invert_probs_steps:
+        probs = 1.0 - probs
+        probs = probs / probs.sum(dim=-1, keepdim=True)
     if sample_logits:
         idx = torch.multinomial(probs, num_samples=1)
     else:

@@ -79,6 +79,8 @@ def main(args):
             folder_name += f"-noise-topk-{args.noise_top_k}"
         if args.noise_top_p is not None:
             folder_name += f"-noise-topp-{args.noise_top_p}"
+    if args.invert_probs_steps > 0:
+        folder_name += f"-invert-probs-{args.invert_probs_steps}"
     sample_folder_dir = f"{args.sample_dir}/{folder_name}"
     if rank == 0:
         os.makedirs(sample_folder_dir, exist_ok=True)
@@ -321,7 +323,7 @@ def main(args):
             top_p=args.top_p, sample_logits=True,
             noise_scale=args.noise_scale, noise_steps=args.noise_steps,
             noise_temperature=args.noise_temperature, noise_top_k=args.noise_top_k,
-            noise_top_p=args.noise_top_p,
+            noise_top_p=args.noise_top_p, invert_probs_steps=args.invert_probs_steps,
             )
         e_ARtime = time.time() ################################
         ARtime += (e_ARtime - s_ARtime) ################################
@@ -389,5 +391,6 @@ if __name__ == "__main__":
     parser.add_argument("--noise-temperature", type=float, default=None, help="temperature for noise steps (defaults to --temperature if not set)")
     parser.add_argument("--noise-top-k", type=int, default=None, help="top-k for noise steps (defaults to --top-k if not set)")
     parser.add_argument("--noise-top-p", type=float, default=None, help="top-p for noise steps (defaults to --top-p if not set)")
+    parser.add_argument("--invert-probs-steps", type=int, default=0, help="number of initial steps to invert probabilities (1-p)")
     args = parser.parse_args()
     main(args)
