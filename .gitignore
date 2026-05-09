@@ -2,6 +2,7 @@
 *.pt
 *.npz
 *.npy
+*.png
 __pycache__/
 .ipynb_checkpoints/
 .env
