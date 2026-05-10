@@ -11,3 +11,16 @@
 [[34m2026-05-08 14:23:35[0m] Total time for sampling 50176 images: 950.13 seconds
 [[34m2026-05-08 14:23:35[0m] Total time for AR: 615.59 seconds, batch size in each GPU: 32, global batch size: 256
 [[34m2026-05-08 14:23:35[0m] iterations: 196, avg time for each batch: 3.1408 seconds
+[[34m2026-05-09 11:23:59[0m] Experiment directory created at samples/GPT-B-c2i_B_256-size-256-size-256-VQ-16-topk-0-topp-1.0-temperature-1.0-cfg-2.0-seed-0
+[[34m2026-05-09 11:24:13[0m] gcc -pthread -B /mnt/afs/zhengmingkai/zyr/EvoGen_env/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /mnt/afs/zhengmingkai/zyr/EvoGen_env/include -fPIC -O2 -isystem /mnt/afs/zhengmingkai/zyr/EvoGen_env/include -fPIC -c /tmp/tmpwaokb_5c/test.c -o /tmp/tmpwaokb_5c/test.o
+[[34m2026-05-09 11:24:14[0m] gcc -pthread -B /mnt/afs/zhengmingkai/zyr/EvoGen_env/compiler_compat /tmp/tmpwaokb_5c/test.o -laio -o /tmp/tmpwaokb_5c/a.out
+[[34m2026-05-09 11:24:18[0m] gcc -pthread -B /mnt/afs/zhengmingkai/zyr/EvoGen_env/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /mnt/afs/zhengmingkai/zyr/EvoGen_env/include -fPIC -O2 -isystem /mnt/afs/zhengmingkai/zyr/EvoGen_env/include -fPIC -c /tmp/tmp24xm1g0m/test.c -o /tmp/tmp24xm1g0m/test.o
+[[34m2026-05-09 11:24:18[0m] gcc -pthread -B /mnt/afs/zhengmingkai/zyr/EvoGen_env/compiler_compat /tmp/tmp24xm1g0m/test.o -L/opt/maca/tools/cu-bridge -L/opt/maca/tools/cu-bridge/lib64 -lcufile -o /tmp/tmp24xm1g0m/a.out
+[[34m2026-05-09 11:25:14[0m] --------------------------------------------------
+[[34m2026-05-09 11:25:14[0m] ✅ DeepSpeed 统计成功!
+[[34m2026-05-09 11:25:14[0m] 单图总计算量: 104.85 GFLOPs
+[[34m2026-05-09 11:25:14[0m] --------------------------------------------------
+[[34m2026-05-09 11:46:50[0m] Done.
+[[34m2026-05-09 11:46:50[0m] Total time for sampling 50176 images: 950.49 seconds
+[[34m2026-05-09 11:46:50[0m] Total time for AR: 618.75 seconds, batch size in each GPU: 32, global batch size: 256
+[[34m2026-05-09 11:46:50[0m] iterations: 196, avg time for each batch: 3.1569 seconds
