@@ -137,17 +137,17 @@ bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/scripts/autoregressive/sample_c2i.s
     --image-size 384 --image-size-eval 256 --cfg-scale 2.0 \
     --sample-dir samples --num-fid-samples 50000 --per-proc-batch-size 32 \
     --temperature 1.0 --top-k 0 --top-p 1.0 \
-    --noise-steps 0 \
-    --noise-scale 0.0 \
+    --noise-steps 4 \
+    --noise-scale 2.0 \
     --noise-temperature 1.0 \
     --noise-top-k 0 \
     --noise-top-p 1.0 \
-    --invert-probs-steps 4
+    --invert-probs-steps 0
 
 # Evaluation
 python3 evaluations/c2i/evaluator.py \
     /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/samples/VIRTUAL_imagenet256_labeled.npz \
-    /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/samples/GPT-XL-c2i_XL_384-size-384-size-256-VQ-16-topk-0-topp-1.0-temperature-1.0-cfg-2.0-seed-0-noise-steps-4-noise-scale-0.5-noise-temp-1.0-noise-topk-0-noise-topp-1.0.npz
+    /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/samples/GPT-XL-c2i_XL_384-size-384-size-256-VQ-16-topk-0-topp-1.0-temperature-1.0-cfg-2.0-seed-0-noise-steps-4-noise-scale-2.0-noise-temp-1.0-noise-topk-0-noise-topp-1.0.npz
 
 
 # placeholder

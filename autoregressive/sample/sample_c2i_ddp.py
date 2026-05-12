@@ -248,7 +248,8 @@ def main(args):
 
     for _ in pbar:
         # Sample inputs:
-        c_indices = torch.randint(0, args.num_classes, (n,), device=device)
+        # c_indices = torch.randint(0, args.num_classes, (n,), device=device)
+        c_indices = torch.randint(0, int(args.num_classes/10), (n,), device=device)
         # c_indices = torch.tensor(c_indicess[c_idx], device=device)
         # c_idx = (c_idx + 1)
         # print(c_indices)
