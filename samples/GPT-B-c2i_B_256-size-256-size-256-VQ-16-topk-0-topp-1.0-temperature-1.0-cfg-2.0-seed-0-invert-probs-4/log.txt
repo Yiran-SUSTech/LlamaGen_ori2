@@ -1,0 +1,13 @@
+[[34m2026-05-10 14:22:42[0m] Experiment directory created at samples/GPT-B-c2i_B_256-size-256-size-256-VQ-16-topk-0-topp-1.0-temperature-1.0-cfg-2.0-seed-0-invert-probs-4
+[[34m2026-05-10 14:22:56[0m] gcc -pthread -B /mnt/afs/zhengmingkai/zyr/EvoGen_env/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /mnt/afs/zhengmingkai/zyr/EvoGen_env/include -fPIC -O2 -isystem /mnt/afs/zhengmingkai/zyr/EvoGen_env/include -fPIC -c /tmp/tmp8f0mdwnp/test.c -o /tmp/tmp8f0mdwnp/test.o
+[[34m2026-05-10 14:22:56[0m] gcc -pthread -B /mnt/afs/zhengmingkai/zyr/EvoGen_env/compiler_compat /tmp/tmp8f0mdwnp/test.o -laio -o /tmp/tmp8f0mdwnp/a.out
+[[34m2026-05-10 14:23:01[0m] gcc -pthread -B /mnt/afs/zhengmingkai/zyr/EvoGen_env/compiler_compat -Wno-unused-result -Wsign-compare -DNDEBUG -fwrapv -O2 -Wall -fPIC -O2 -isystem /mnt/afs/zhengmingkai/zyr/EvoGen_env/include -fPIC -O2 -isystem /mnt/afs/zhengmingkai/zyr/EvoGen_env/include -fPIC -c /tmp/tmpcy76t2rn/test.c -o /tmp/tmpcy76t2rn/test.o
+[[34m2026-05-10 14:23:01[0m] gcc -pthread -B /mnt/afs/zhengmingkai/zyr/EvoGen_env/compiler_compat /tmp/tmpcy76t2rn/test.o -L/opt/maca/tools/cu-bridge -L/opt/maca/tools/cu-bridge/lib64 -lcufile -o /tmp/tmpcy76t2rn/a.out
+[[34m2026-05-10 14:23:59[0m] --------------------------------------------------
+[[34m2026-05-10 14:23:59[0m] ✅ DeepSpeed 统计成功!
+[[34m2026-05-10 14:23:59[0m] 单图总计算量: 104.85 GFLOPs
+[[34m2026-05-10 14:23:59[0m] --------------------------------------------------
+[[34m2026-05-10 14:45:28[0m] Done.
+[[34m2026-05-10 14:45:28[0m] Total time for sampling 50176 images: 953.80 seconds
+[[34m2026-05-10 14:45:28[0m] Total time for AR: 618.98 seconds, batch size in each GPU: 32, global batch size: 256
+[[34m2026-05-10 14:45:28[0m] iterations: 196, avg time for each batch: 3.1581 seconds
