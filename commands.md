@@ -126,8 +126,8 @@ bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/scripts/autoregressive/sample_c2i.s
     --sample-dir samples --num-fid-samples 50000 --per-proc-batch-size 32 \
     --temperature 1.0 --top-k 0 --top-p 1.0 \
     --noise-steps 4 \
-    --noise-scale 0.0 \
-    --noise-temperature 2.0 \
+    --noise-scale 2.0 \
+    --noise-temperature 1.0 \
     --noise-top-k 0 \
     --noise-top-p 1.0
 
@@ -135,14 +135,23 @@ bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/scripts/autoregressive/sample_c2i.s
     --vq-ckpt /mnt/afs/zhengmingkai/zyr/pretrained_models/vq_ds16_c2i.pt \
     --gpt-ckpt /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/pretrained_ckpt/c2i_XL_384.pt --gpt-model GPT-XL \
     --image-size 384 --image-size-eval 256 --cfg-scale 2.0 \
-    --sample-dir samples --num-fid-samples 50000 --per-proc-batch-size 32 \
+    --sample-dir samples --num-fid-samples 500 --per-proc-batch-size 10 \
     --temperature 1.0 --top-k 0 --top-p 1.0 \
-    --noise-steps 4 \
-    --noise-scale 2.0 \
+    --noise-steps 0 \
+    --noise-scale 0.0 \
     --noise-temperature 1.0 \
     --noise-top-k 0 \
     --noise-top-p 1.0 \
     --invert-probs-steps 0
+
+# 固定 class ID 采样
+bash /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/scripts/autoregressive/sample_c2i.sh \
+    --vq-ckpt /mnt/afs/zhengmingkai/zyr/pretrained_models/vq_ds16_c2i.pt \
+    --gpt-ckpt /mnt/afs/zhengmingkai/zyr/LlamaGen_ori2/pretrained_ckpt/c2i_XL_384.pt --gpt-model GPT-XL \
+    --image-size 384 --image-size-eval 256 --cfg-scale 2.0 \
+    --sample-dir samples --num-fid-samples 500 --per-proc-batch-size 10 \
+    --class-ids-mode fixed \
+    --samples-per-class 5
 
 # Evaluation
 python3 evaluations/c2i/evaluator.py \

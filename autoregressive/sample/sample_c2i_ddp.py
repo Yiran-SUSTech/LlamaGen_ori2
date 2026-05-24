@@ -69,8 +69,8 @@ def main(args):
     else:
         ckpt_string_name = os.path.basename(args.gpt_ckpt).replace(".pth", "").replace(".pt", "")
     folder_name = f"{model_string_name}-{ckpt_string_name}-size-{args.image_size}-size-{args.image_size_eval}-{args.vq_model}-" \
-                  f"topk-{args.top_k}-topp-{args.top_p}-temperature-{args.temperature}-" \
-                  f"cfg-{args.cfg_scale}-seed-{args.global_seed}"
+                  f"topk-{args.top_k}-topp-{args.top_p}-temperature-{args.temperature}-classidsmode-{args.class_ids_mode}" \
+                  f"cfg-{args.cfg_scale}-seed-{args.global_seed}-"
     if args.noise_steps > 0 or args.noise_scale > 0.0:
         folder_name += f"-noise-steps-{args.noise_steps}-noise-scale-{args.noise_scale}"
         if args.noise_temperature is not None:
@@ -219,14 +219,44 @@ def main(args):
     # Figure out how many samples we need to generate on each GPU and how many iterations we need to run:
     n = args.per_proc_batch_size
     global_batch_size = n * dist.get_world_size()
-    # To make things evenly-divisible, we'll sample a bit more than we need and then discard the extra samples:
-    total_samples = int(math.ceil(args.num_fid_samples / global_batch_size) * global_batch_size)
-    if rank == 0:
-        print(f"Total number of images that will be sampled: {total_samples}")
-    assert total_samples % dist.get_world_size() == 0, "total_samples must be divisible by world_size"
-    samples_needed_this_gpu = int(total_samples // dist.get_world_size())
-    assert samples_needed_this_gpu % n == 0, "samples_needed_this_gpu must be divisible by the per-GPU batch size"
-    iterations = int(samples_needed_this_gpu // n)
+    
+    if args.class_ids_mode == 'fixed':
+        # Generate specific class IDs: 0-9, 100-109, 200-209, ..., 900-909
+        class_ranges = [(i * 100 + j) for i in range(10) for j in range(10)]
+        samples_per_class = args.samples_per_class
+        total_samples = len(class_ranges) * samples_per_class
+        
+        # Create ordered class indices for all samples
+        all_class_indices = []
+        for class_id in class_ranges:
+            all_class_indices.extend([class_id] * samples_per_class)
+        all_class_indices = torch.tensor(all_class_indices, dtype=torch.long)
+        
+        if rank == 0:
+            print(f"Total number of images that will be sampled: {total_samples}")
+            print(f"Class IDs: {class_ranges}")
+            print(f"Samples per class: {samples_per_class}")
+        
+        # Distribute samples across GPUs
+        assert total_samples % dist.get_world_size() == 0, "total_samples must be divisible by world_size"
+        samples_per_gpu = total_samples // dist.get_world_size()
+        assert samples_per_gpu % n == 0, "samples_per_gpu must be divisible by per-GPU batch size"
+        iterations = int(samples_per_gpu // n)
+        
+        # Get this GPU's portion of class indices
+        start_idx = rank * samples_per_gpu
+        end_idx = start_idx + samples_per_gpu
+        gpu_class_indices = all_class_indices[start_idx:end_idx].to(device)
+    else:
+        # Original random sampling
+        total_samples = int(math.ceil(args.num_fid_samples / global_batch_size) * global_batch_size)
+        if rank == 0:
+            print(f"Total number of images that will be sampled: {total_samples}")
+        assert total_samples % dist.get_world_size() == 0, "total_samples must be divisible by world_size"
+        samples_per_gpu = total_samples // dist.get_world_size()
+        assert samples_per_gpu % n == 0, "samples_per_gpu must be divisible by per-GPU batch size"
+        iterations = int(samples_per_gpu // n)
+    
     pbar = range(iterations)
     pbar = tqdm(pbar) if rank == 0 else pbar
     total = 0
@@ -246,10 +276,15 @@ def main(args):
     #               [493, 596, 938, 722, 394,  88, 783, 845]]
     has_measured_flops = False  # 标志位，确保只测一次
 
-    for _ in pbar:
-        # Sample inputs:
-        # c_indices = torch.randint(0, args.num_classes, (n,), device=device)
-        c_indices = torch.randint(0, int(args.num_classes/10), (n,), device=device)
+    for iteration_idx in pbar:
+        # Get class indices for this batch
+        if args.class_ids_mode == 'fixed':
+            batch_start = iteration_idx * n
+            batch_end = batch_start + n
+            c_indices = gpu_class_indices[batch_start:batch_end]
+        else:
+            # Random sampling
+            c_indices = torch.randint(0, args.num_classes, (n,), device=device)
         # c_indices = torch.tensor(c_indicess[c_idx], device=device)
         # c_idx = (c_idx + 1)
         # print(c_indices)
@@ -384,6 +419,8 @@ if __name__ == "__main__":
     parser.add_argument("--per-proc-batch-size", type=int, default=32)
     parser.add_argument("--num-fid-samples", type=int, default=50000)
     parser.add_argument("--global-seed", type=int, default=0)
+    parser.add_argument("--class-ids-mode", type=str, choices=['random', 'fixed'], default='random', help="sampling mode: random (original) or fixed (specific class IDs)")
+    parser.add_argument("--samples-per-class", type=int, default=5, help="number of samples per class in fixed mode")
     parser.add_argument("--top-k", type=int, default=0,help="top-k value to sample with")
     parser.add_argument("--temperature", type=float, default=1.0, help="temperature value to sample with")
     parser.add_argument("--top-p", type=float, default=1.0, help="top-p value to sample with")
